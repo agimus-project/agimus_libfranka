@@ -2,6 +2,7 @@
   description = "ROS integration for Franka research robots";
 
   inputs.nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
+  # libfranka-common.url = "git+file:common";
 
   outputs =
     { nix-ros-overlay, self, ... }:
@@ -17,16 +18,12 @@
         packages = {
           default = self.packages.${system}.libfranka;
           libfranka = pkgs.rosPackages.humble.libfranka.overrideAttrs {
-            preBuild = ''
-              echo "Checking out submodules"
-              git submodule update --init --recursive
-            '';
 
             src = pkgs.lib.fileset.toSource {
               root = ./.;
               fileset = pkgs.lib.fileset.unions [
                 ./cmake
-                (pkgs.lib.fileset.maybeMissing ./common)
+                ./common
                 ./doc
                 ./examples
                 ./include
