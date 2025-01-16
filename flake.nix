@@ -32,7 +32,7 @@
                 ./CMakeLists.txt
                 ./LICENSE
                 ./NOTICE
-                ./README
+                ./README.md
               ];
             };
           };
