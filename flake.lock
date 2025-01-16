@@ -18,6 +18,22 @@
         "type": "github"
       }
     },
+    "libfranka-common": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1706898278,
+        "narHash": "sha256-gwsl+WpMq9ZKAb+lI+zxaFz1Om3Bs/7aN+lPV/CYp9M=",
+        "owner": "tingelst",
+        "repo": "libfranka-common",
+        "rev": "cacc912e12c9864ae644331d1a45bec4574bda6f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tingelst",
+        "repo": "libfranka-common",
+        "type": "github"
+      }
+    },
     "nix-ros-overlay": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -56,6 +72,7 @@
     },
     "root": {
       "inputs": {
+        "libfranka-common": "libfranka-common",
         "nix-ros-overlay": "nix-ros-overlay"
       }
     },

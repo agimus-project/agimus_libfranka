@@ -1,11 +1,18 @@
 {
   description = "ROS integration for Franka research robots";
 
-  inputs.nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
-  # libfranka-common.url = "git+file:common";
+  inputs = {
+    nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
+    libfranka-common = {
+      # tingelst fork because
+      # https://github.com/frankaemika/libfranka-common/issues/1
+      url = "github:tingelst/libfranka-common";
+      flake = false;
+    };
+  };
 
   outputs =
-    { nix-ros-overlay, self, ... }:
+    { libfranka-common, nix-ros-overlay, self, ... }:
     nix-ros-overlay.inputs.flake-utils.lib.eachDefaultSystem (
       system:
       let
@@ -18,12 +25,10 @@
         packages = {
           default = self.packages.${system}.libfranka;
           libfranka = pkgs.rosPackages.humble.libfranka.overrideAttrs {
-
             src = pkgs.lib.fileset.toSource {
               root = ./.;
               fileset = pkgs.lib.fileset.unions [
                 ./cmake
-                ./common
                 ./doc
                 ./examples
                 ./include
@@ -37,6 +42,10 @@
                 ./README.md
               ];
             };
+            # CMake has a `add_subdirectory(common)` which is a git submodule
+            preConfigure = ''
+              ln -s ${libfranka-common} common
+            '';
           };
         };
       }
