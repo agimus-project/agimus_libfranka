@@ -8,7 +8,7 @@ With this library, you can control research versions of Franka Robotics robots. 
 ## Note
 
 This is a fork of the https://github.com/tingelst/libfranka which is a fork of https://github.com/frankaemika/libfranka.
-This library is is originally deprecated for the oldest robots. Hence in order to
+This library is originally deprecated for the oldest robots. Hence in order to
 prevent the original owners to delete this package we created this fork.
 
 This library has been tested with ROS2 on Panda robot in LAAS-CNRS and CTU-Prague.
