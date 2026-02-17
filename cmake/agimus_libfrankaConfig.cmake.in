@@ -1,0 +1,12 @@
+get_filename_component(agimus_libfranka_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+find_package(agimus-libfranka-common REQUIRED CONFIG)
+
+if(NOT TARGET agimus_libfranka::agimus_libfranka)
+  include("${agimus_libfranka_CMAKE_DIR}/agimus_libfrankaTargets.cmake")
+endif()
+
+set(agimus_libfranka_LIBRARIES agimus_libfranka::agimus_libfranka)
+get_target_property(agimus_libfranka_INCLUDE_DIRS agimus_libfranka::agimus_libfranka INTERFACE_INCLUDE_DIRECTORIES)

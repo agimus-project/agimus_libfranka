@@ -1,57 +1,26 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.22)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set(libfranka_VERSION 0.9.3)
-
-project(libfranka
-  VERSION ${libfranka_VERSION}
+set(BASE_NAME libfranka)
+set(${BASE_NAME}_VERSION 0.9.3)
+project(agimus_${BASE_NAME}
+  VERSION ${${BASE_NAME}_VERSION}
   LANGUAGES CXX
 )
 
-list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# Set a default build type if none was specified
-set(DEFAULT_BUILD_TYPE "Release")
-
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to '${DEFAULT_BUILD_TYPE}' as none was specified.")
-  set(CMAKE_BUILD_TYPE "${DEFAULT_BUILD_TYPE}" CACHE
-    STRING "Choose the type of build." FORCE)
-  # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
-    "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
-
-if(MSVC)
-  add_compile_options(/W0)
-else()
-  add_compile_options(-Wall -Wextra)
-endif()
-
-set(THIRDPARTY_SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty" CACHE PATH
-  "Directory for third-party sources")
+option(BUILD_TESTING "Build tests" ON)
 
 ## Dependencies
 find_package(Poco REQUIRED COMPONENTS Net Foundation)
-find_package(Eigen3 REQUIRED)
+find_package(Eigen3 REQUIRED CONFIG)
+find_package(agimus-libfranka-common REQUIRED CONFIG)
+if(BUILD_TESTING)
+  find_package(GTest REQUIRED CONFIG)
+endif()
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-
-## Build options
-option(STRICT "Treat warnings as errors" OFF)
-if(STRICT)
-  if(MSVC)
-    add_compile_options(/WX)
-  else()
-    add_compile_options(-Werror)
-  endif()
-endif()
 
 option(BUILD_COVERAGE "Build with code coverage" OFF)
 if(BUILD_COVERAGE)
@@ -61,11 +30,8 @@ if(BUILD_COVERAGE)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} --coverage")
 endif()
 
-## Submodules
-add_subdirectory(common)
-
 ## Library
-add_library(franka SHARED
+add_library(${PROJECT_NAME} SHARED
   src/active_control.cpp
   src/active_motion_generator.cpp
   src/active_torque_control.cpp
@@ -93,15 +59,13 @@ add_library(franka SHARED
   src/vacuum_gripper.cpp
   src/vacuum_gripper_state.cpp
 )
-add_library(Franka::Franka ALIAS franka)
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
-set_target_properties(franka PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
   WINDOWS_EXPORT_ALL_SYMBOLS ON
   VERSION ${libfranka_VERSION}
-  SOVERSION ${libfranka_VERSION_MAJOR}.${libfranka_VERSION_MINOR} # Use minor version while we're at 0.x
-  EXPORT_NAME Franka
 )
-target_compile_features(franka INTERFACE
+target_compile_features(${PROJECT_NAME} INTERFACE
   cxx_attribute_deprecated
   cxx_constexpr
   cxx_defaulted_functions
@@ -111,73 +75,72 @@ target_compile_features(franka INTERFACE
   cxx_uniform_initialization
 )
 if(MSVC)
-  target_compile_definitions(franka PUBLIC
+target_compile_definitions(${PROJECT_NAME} PUBLIC
     _USE_MATH_DEFINES # for M_PI in cmath
     NOMINMAX # avoid conflict with std::min
   )
 endif()
 
-target_include_directories(franka PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(franka PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
   Poco::Foundation
   Poco::Net
-  Eigen3::Eigen3
+  Eigen3::Eigen
   Threads::Threads
 )
 
-target_link_libraries(franka PUBLIC
-  libfranka-common
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  agimus-libfranka-common::agimus-libfranka-common
 )
 
 ## Installation
 include(GNUInstallDirs)
-set(INSTALL_CMAKE_CONFIG_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/Franka)
+set(INSTALL_CMAKE_CONFIG_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
-install(TARGETS franka libfranka-common
-  EXPORT FrankaTargets
+install(TARGETS ${PROJECT_NAME}
+  EXPORT ${PROJECT_NAME}Targets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
-install(DIRECTORY include/ common/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+install(DIRECTORY include/franka DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   USE_SOURCE_PERMISSIONS
 )
 
-export(EXPORT FrankaTargets
-  NAMESPACE Franka::
-  FILE ${CMAKE_CURRENT_BINARY_DIR}/FrankaTargets.cmake
+export(EXPORT ${PROJECT_NAME}Targets
+  NAMESPACE ${PROJECT_NAME}::
+  FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake
 )
 
 include(CMakePackageConfigHelpers)
-write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/FrankaConfigVersion.cmake
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
   COMPATIBILITY SameMajorVersion
 )
-configure_package_config_file(cmake/FrankaConfig.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/FrankaConfig.cmake
+configure_package_config_file(cmake/${PROJECT_NAME}Config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
   INSTALL_DESTINATION ${INSTALL_CMAKE_CONFIG_DIR}
 )
 
 install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/FrankaConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/FrankaConfigVersion.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
   DESTINATION ${INSTALL_CMAKE_CONFIG_DIR}
 )
-install(EXPORT FrankaTargets
-  NAMESPACE Franka::
+install(EXPORT ${PROJECT_NAME}Targets
+  NAMESPACE ${PROJECT_NAME}::
   DESTINATION ${INSTALL_CMAKE_CONFIG_DIR}
 )
 
 ## Subprojects
 
-# Ignore find_package(Franka) in subprojects.
+# Ignore find_package(agimus_libfranka) in subprojects.
 set(FRANKA_IS_FOUND TRUE)
 
-option(BUILD_TESTS "Build tests" ON)
-if(BUILD_TESTS)
+if(BUILD_TESTING)
   enable_testing()
   add_subdirectory(test)
 endif()
@@ -192,30 +155,15 @@ if(BUILD_DOCUMENTATION)
   add_subdirectory(doc)
 endif()
 
-## Packaging
-set(CPACK_PACKAGE_VENDOR "Franka Robotics GmbH")
-set(CPACK_GENERATOR "DEB;TGZ")
-set(CPACK_PACKAGE_VERSION ${libfranka_VERSION})
-set(CPACK_SYSTEM_NAME ${CMAKE_HOST_SYSTEM_PROCESSOR})
-
-# Debian versions require a dash
-set(CPACK_DEBIAN_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION}-1)
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Franka Robotics GmbH")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libpoco-dev")
-set(CPACK_DEBIAN_PACKAGE_CONFLICTS "ros-kinetic-libfranka, ros-melodic-libfranka, ros-noetic-libfranka, ros-foxy-libfranka")
-include(CPack)
-
 ## Tools
 file(GLOB_RECURSE SOURCES
   src/*.cpp
   examples/*.cpp
-  common/*.cpp
 )
 file(GLOB_RECURSE HEADERS
   include/*.h
   src/*.h
   examples/*.h
-  common/*.h
 )
 file(GLOB_RECURSE TEST_FILES
   test/*.h
@@ -224,49 +172,3 @@ file(GLOB_RECURSE TEST_FILES
 file(GLOB_RECURSE TIDY_IGNORED_FILES
   src/libfcimodels.h
 )
-
-find_program(CLANG_FORMAT_PROG clang-format-6.0 DOC "'clang-format' executable")
-if(CLANG_FORMAT_PROG)
-  add_custom_target(format
-    COMMAND ${CLANG_FORMAT_PROG} -i ${SOURCES} ${HEADERS} ${TEST_FILES}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Formatting source code with clang-format"
-    VERBATIM
-  )
-  add_custom_target(check-format
-    COMMAND scripts/format-check.sh ${CLANG_FORMAT_PROG} -output-replacements-xml ${SOURCES} ${HEADERS} ${TEST_FILES}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Checking code formatting with clang-format"
-    VERBATIM
-  )
-else(CLANG_FORMAT_PROG)
-  MESSAGE(WARNING "Could not find clang-format-6.0")
-endif()
-
-find_program(CLANG_TIDY_PROG clang-tidy-6.0 DOC "'clang-tidy' executable")
-if(CLANG_TIDY_PROG)
-  # Build JSON string for clang-tidy's line filter
-  set(TIDY_FILES ${SOURCES} ${HEADERS})
-  foreach(ignored_file ${TIDY_IGNORED_FILES})
-    list(REMOVE_ITEM TIDY_FILES ${ignored_file})
-  endforeach()
-  string(REPLACE ";" "\"},{\"name\":\"" TIDY_LINE_FILTER "${TIDY_FILES}")
-  set(TIDY_LINE_FILTER "[{\"name\":\"${TIDY_LINE_FILTER}\"}]")
-
-  add_custom_target(tidy
-    COMMAND ${CLANG_TIDY_PROG} -p=${CMAKE_BINARY_DIR}
-                               -line-filter=${TIDY_LINE_FILTER} ${SOURCES}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Running clang-tidy"
-    VERBATIM
-  )
-  add_custom_target(check-tidy
-    COMMAND scripts/fail-on-output.sh ${CLANG_TIDY_PROG} -p=${CMAKE_BINARY_DIR}
-                                      -line-filter=${TIDY_LINE_FILTER} ${SOURCES}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Running clang-tidy"
-    VERBATIM
-  )
-else(CLANG_TIDY_PROG)
-  MESSAGE(WARNING "Could not find clang-tidy-6.0")
-endif()

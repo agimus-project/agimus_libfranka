@@ -2,52 +2,68 @@
   description = "ROS integration for Franka research robots";
 
   inputs = {
-    nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
-    libfranka-common = {
-      # tingelst fork because
-      # https://github.com/frankaemika/libfranka-common/issues/1
-      url = "github:tingelst/libfranka-common";
-      flake = false;
-    };
+    gazebros2nix.url = "github:gepetto/gazebros2nix";
+    flake-parts.follows = "gazebros2nix/flake-parts";
+    nixpkgs.follows = "gazebros2nix/nixpkgs";
+    nix-ros-overlay.follows = "gazebros2nix/nix-ros-overlay";
+    systems.follows = "gazebros2nix/systems";
+    treefmt-nix.follows = "gazebros2nix/treefmt-nix";
   };
 
   outputs =
-    { libfranka-common, nix-ros-overlay, self, ... }:
-    nix-ros-overlay.inputs.flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import nix-ros-overlay.inputs.nixpkgs {
-          inherit system;
-          overlays = [ nix-ros-overlay.overlays.default ];
-        };
-      in
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } (
+      { lib, self, ... }:
       {
-        packages = {
-          default = self.packages.${system}.libfranka;
-          libfranka = pkgs.rosPackages.humble.libfranka.overrideAttrs {
-            src = pkgs.lib.fileset.toSource {
-              root = ./.;
-              fileset = pkgs.lib.fileset.unions [
-                ./cmake
-                ./doc
-                ./examples
-                ./include
-                ./scripts
-                ./src
-                ./test
-                ./CHANGELOG.md
-                ./CMakeLists.txt
-                ./LICENSE
-                ./NOTICE
-                ./README.md
-              ];
+        systems = import inputs.systems;
+        imports = [
+          inputs.gazebros2nix.flakeModule
+          { gazebros2nix-pkgs.overlays = [ self.overlays.default ]; }
+        ];
+        flake.overlays.default =
+          _final: prev:
+          let
+            scope = _ros-final: ros-prev: {
+              agimus-libfranka = ros-prev.agimus-libfranka.overrideAttrs {
+                src = lib.fileset.toSource {
+                  root = ./.;
+                  fileset = lib.fileset.unions [
+                    ./cmake
+                    ./doc
+                    ./examples
+                    ./include
+                    ./scripts
+                    ./src
+                    ./test
+                    ./CHANGELOG.md
+                    ./CMakeLists.txt
+                    ./LICENSE
+                    ./NOTICE
+                    ./README.md
+                  ];
+                };
+              };
             };
-            # CMake has a `add_subdirectory(common)` which is a git submodule
-            preConfigure = ''
-              ln -s ${libfranka-common} common
-            '';
+          in
+          {
+            rosPackages = prev.rosPackages // {
+              humble = prev.rosPackages.humble.overrideScope scope;
+              jazzy = prev.rosPackages.jazzy.overrideScope scope;
+              kilted = prev.rosPackages.kilted.overrideScope scope;
+              rolling = prev.rosPackages.rolling.overrideScope scope;
+            };
           };
-        };
+        perSystem =
+          { pkgs, ... }:
+          {
+            packages = lib.filterAttrs (_n: v: v.meta.available && !v.meta.broken) (rec {
+              default = humble-agimus-libfranka;
+              humble-agimus-libfranka = pkgs.rosPackages.humble.agimus-libfranka;
+              # jazzy-agimus-libfranka = pkgs.rosPackages.jazzy.agimus-libfranka;
+              # kilted-agimus-libfranka = pkgs.rosPackages.kilted.agimus-libfranka;
+              # rolling-agimus-libfranka = pkgs.rosPackages.rolling.agimus-libfranka;
+            });
+          };
       }
     );
 }

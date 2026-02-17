@@ -1,16 +1,11 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.22)
 
-project(libfranka-examples CXX)
-
-list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_LIST_DIR}/../cmake)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+project(agimus-libfranka-examples CXX)
 
 if(NOT FRANKA_IS_FOUND)
-    find_package(Franka REQUIRED)
+  find_package(agimus_libfranka REQUIRED CONFIG)
 endif()
-find_package(Eigen3 REQUIRED)
+find_package(Eigen3 REQUIRED CONFIG)
 find_package(Poco REQUIRED COMPONENTS Foundation)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -20,7 +15,7 @@ add_library(examples_common STATIC
   examples_common.cpp
 )
 
-target_link_libraries(examples_common PRIVATE Franka::Franka Eigen3::Eigen3)
+target_link_libraries(examples_common PRIVATE agimus_libfranka::agimus_libfranka Eigen3::Eigen)
 target_include_directories(examples_common PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -55,7 +50,7 @@ foreach(example ${EXAMPLES})
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
   )
-  target_link_libraries(${example} Franka::Franka examples_common Eigen3::Eigen3)
+  target_link_libraries(${example} agimus_libfranka::agimus_libfranka examples_common Eigen3::Eigen)
 endforeach()
 
 target_link_libraries(joint_impedance_control Threads::Threads)
