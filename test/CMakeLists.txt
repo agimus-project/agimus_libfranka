@@ -1,18 +1,15 @@
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-foreach(lib ${GTEST_LIBRARIES})
-  target_compile_options(${lib} PUBLIC -Wno-deprecated-copy)
-endforeach()
-
 set(TEST_OUTPUT_DIR ${PROJECT_BINARY_DIR}/test_results)
 set(TEST_DEPENDENCIES
-  GTest::gtest
+  GTest::gmock
+  GTest::gtest_main
   Poco::Foundation
   Poco::Net
   Eigen3::Eigen
   Threads::Threads
-  franka
-  libfranka-common
+  agimus_libfranka::agimus_libfranka
+  agimus-libfranka-common::agimus-libfranka-common
 )
 set(TEST_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
