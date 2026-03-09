@@ -11,27 +11,27 @@
 #include <thread>
 
 #include <franka/robot_state.h>
-#include <research_interface/gripper/types.h>
-#include <research_interface/robot/rbk_types.h>
-#include <research_interface/robot/service_types.h>
-#include <research_interface/vacuum_gripper/types.h>
+#include <agimus_research_interface/gripper/types.h>
+#include <agimus_research_interface/robot/rbk_types.h>
+#include <agimus_research_interface/robot/service_types.h>
+#include <agimus_research_interface/vacuum_gripper/types.h>
 
 struct RobotTypes {
-  using Connect = research_interface::robot::Connect;
-  using State = research_interface::robot::RobotState;
-  static constexpr uint16_t kCommandPort = research_interface::robot::kCommandPort;
+  using Connect = agimus_research_interface::robot::Connect;
+  using State = agimus_research_interface::robot::RobotState;
+  static constexpr uint16_t kCommandPort = agimus_research_interface::robot::kCommandPort;
 };
 
 struct GripperTypes {
-  using Connect = research_interface::gripper::Connect;
-  using State = research_interface::gripper::GripperState;
-  static constexpr uint16_t kCommandPort = research_interface::gripper::kCommandPort;
+  using Connect = agimus_research_interface::gripper::Connect;
+  using State = agimus_research_interface::gripper::GripperState;
+  static constexpr uint16_t kCommandPort = agimus_research_interface::gripper::kCommandPort;
 };
 
 struct VacuumGripperTypes {
-  using Connect = research_interface::vacuum_gripper::Connect;
-  using State = research_interface::vacuum_gripper::VacuumGripperState;
-  static constexpr uint16_t kCommandPort = research_interface::vacuum_gripper::kCommandPort;
+  using Connect = agimus_research_interface::vacuum_gripper::Connect;
+  using State = agimus_research_interface::vacuum_gripper::VacuumGripperState;
+  static constexpr uint16_t kCommandPort = agimus_research_interface::vacuum_gripper::kCommandPort;
 };
 
 template <typename C>
@@ -45,7 +45,7 @@ class MockServer {
   using ConnectCallbackT =
       std::function<typename C::Connect::Response(const typename C::Connect::Request&)>;
   using ReceiveRobotCommandCallbackT =
-      std::function<void(const research_interface::robot::RobotCommand&)>;
+      std::function<void(const agimus_research_interface::robot::RobotCommand&)>;
 
   MockServer(ConnectCallbackT on_connect = ConnectCallbackT(), uint32_t sequence_number = 0);
   ~MockServer();

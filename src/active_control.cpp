@@ -4,7 +4,7 @@
 #include <franka/active_control.h>
 #include <franka/exception.h>
 #include <franka/robot.h>
-#include <research_interface/robot/rbk_types.h>
+#include <agimus_research_interface/robot/rbk_types.h>
 
 #include "robot_impl.h"
 

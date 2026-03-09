@@ -19,14 +19,14 @@ TEST(Logger, LogIsFIFO) {
   franka::Logger logger(log_count);
 
   std::vector<franka::RobotState> states;
-  std::vector<research_interface::robot::RobotCommand> commands;
+  std::vector<agimus_research_interface::robot::RobotCommand> commands;
 
   for (size_t i = 0; i < log_count; i++) {
     franka::RobotState state;
     randomRobotState(state);
     states.push_back(state);
 
-    research_interface::robot::RobotCommand command;
+    agimus_research_interface::robot::RobotCommand command;
     randomRobotCommand(command);
     commands.push_back(command);
 
@@ -45,7 +45,7 @@ TEST(Logger, LogIsAFixedSizeRing) {
   franka::Logger logger(ring);
 
   std::vector<franka::RobotState> states;
-  std::vector<research_interface::robot::RobotCommand> commands;
+  std::vector<agimus_research_interface::robot::RobotCommand> commands;
 
   size_t logs = ring * 2;
   for (size_t i = 0; i < logs; i++) {
@@ -53,7 +53,7 @@ TEST(Logger, LogIsAFixedSizeRing) {
     randomRobotState(state);
     states.push_back(state);
 
-    research_interface::robot::RobotCommand command;
+    agimus_research_interface::robot::RobotCommand command;
     randomRobotCommand(command);
     commands.push_back(command);
 
@@ -74,7 +74,7 @@ TEST(Logger, LoggerEmptyAfterFlush) {
   franka::Logger logger(log_count);
 
   for (size_t i = 0; i < log_count; i++) {
-    logger.log(franka::RobotState{}, research_interface::robot::RobotCommand{});
+    logger.log(franka::RobotState{}, agimus_research_interface::robot::RobotCommand{});
   }
 
   std::vector<franka::Record> log = logger.flush();
@@ -90,7 +90,7 @@ TEST(Logger, NoLogWhenLogSizeZero) {
 
   size_t log_count = 50;
   for (size_t i = 0; i < log_count; i++) {
-    logger.log(franka::RobotState{}, research_interface::robot::RobotCommand{});
+    logger.log(franka::RobotState{}, agimus_research_interface::robot::RobotCommand{});
   }
 
   std::vector<franka::Record> log = logger.flush();
@@ -102,7 +102,7 @@ TEST(Logger, WellFormattedString) {
   franka::Logger logger(log_count);
 
   for (size_t i = 0; i < log_count; i++) {
-    logger.log(franka::RobotState{}, research_interface::robot::RobotCommand{});
+    logger.log(franka::RobotState{}, agimus_research_interface::robot::RobotCommand{});
   }
 
   std::string log = franka::logToCSV(logger.flush());
@@ -127,7 +127,7 @@ TEST(Logger, WellFormattedString) {
 
 TEST(Logger, NoDuplicateColumns) {
   franka::Logger logger(1);
-  logger.log(franka::RobotState{}, research_interface::robot::RobotCommand{});
+  logger.log(franka::RobotState{}, agimus_research_interface::robot::RobotCommand{});
 
   std::string log = franka::logToCSV(logger.flush());
 

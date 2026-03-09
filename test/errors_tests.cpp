@@ -3,8 +3,8 @@
 #include <gtest/gtest.h>
 
 #include <franka/errors.h>
-#include <research_interface/robot/error.h>
-#include <research_interface/robot/rbk_types.h>
+#include <agimus_research_interface/robot/error.h>
+#include <agimus_research_interface/robot/rbk_types.h>
 
 #include "helpers.h"
 
@@ -15,7 +15,7 @@ TEST(Errors, IsInitializedToNoErrors) {
 }
 
 TEST(Errors, EvaluatedToTrueOnError) {
-  std::array<bool, sizeof(research_interface::robot::RobotState::errors)> error_flags{};
+  std::array<bool, sizeof(agimus_research_interface::robot::RobotState::errors)> error_flags{};
   error_flags[rand() % error_flags.size()] = true;
 
   franka::Errors errors(error_flags);
@@ -24,12 +24,12 @@ TEST(Errors, EvaluatedToTrueOnError) {
 }
 
 TEST(Errors, CanGetNamesOfErrors) {
-  std::array<bool, sizeof(research_interface::robot::RobotState::errors)> error_flags{};
+  std::array<bool, sizeof(agimus_research_interface::robot::RobotState::errors)> error_flags{};
   std::fill(error_flags.begin(), error_flags.end(), false);
   error_flags[static_cast<size_t>(
-      research_interface::robot::Error::kJointPositionLimitsViolation)] = true;
+      agimus_research_interface::robot::Error::kJointPositionLimitsViolation)] = true;
   error_flags[static_cast<size_t>(
-      research_interface::robot::Error::kSelfcollisionAvoidanceViolation)] = true;
+      agimus_research_interface::robot::Error::kSelfcollisionAvoidanceViolation)] = true;
 
   franka::Errors errors(error_flags);
 

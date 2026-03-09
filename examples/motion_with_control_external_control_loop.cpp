@@ -178,7 +178,7 @@ int main(int argc, char** argv) {
 
     bool motion_finished = false;
     auto active_control = robot.startJointVelocityControl(
-        research_interface::robot::Move::ControllerMode::kExternalController);
+        agimus_research_interface::robot::Move::ControllerMode::kExternalController);
     while (!motion_finished) {
       auto read_once_return = active_control->readOnce();
       auto robot_state = read_once_return.first;

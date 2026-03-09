@@ -13,7 +13,7 @@
 #include "mock_server.h"
 
 using namespace std::chrono_literals;
-using namespace research_interface::robot;
+using namespace agimus_research_interface::robot;
 
 using franka::ControlException;
 using franka::NetworkException;

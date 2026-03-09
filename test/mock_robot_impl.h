@@ -7,7 +7,7 @@
 #include <robot_impl.h>
 
 using namespace franka;
-using namespace research_interface;
+using namespace agimus_research_interface;
 
 class RobotImplMock : public Robot::Impl {
  public:

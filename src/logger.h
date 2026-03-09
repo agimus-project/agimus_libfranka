@@ -8,7 +8,7 @@
 
 #include <franka/log.h>
 #include <franka/robot_state.h>
-#include <research_interface/robot/rbk_types.h>
+#include <agimus_research_interface/robot/rbk_types.h>
 
 namespace franka {
 
@@ -16,13 +16,13 @@ class Logger {
  public:
   explicit Logger(size_t log_size);
 
-  void log(const RobotState& state, const research_interface::robot::RobotCommand& command);
+  void log(const RobotState& state, const agimus_research_interface::robot::RobotCommand& command);
 
   std::vector<franka::Record> flush();
 
  private:
   std::vector<RobotState> states_;
-  std::vector<research_interface::robot::RobotCommand> commands_;
+  std::vector<agimus_research_interface::robot::RobotCommand> commands_;
   size_t ring_front_{0};
   size_t ring_size_{0};
 

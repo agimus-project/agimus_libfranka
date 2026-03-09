@@ -14,7 +14,7 @@ using franka::GripperState;
 using franka::IncompatibleVersionException;
 using franka::Network;
 
-using namespace research_interface::gripper;
+using namespace agimus_research_interface::gripper;
 
 template <typename T>
 class GripperCommand : public ::testing::Test {

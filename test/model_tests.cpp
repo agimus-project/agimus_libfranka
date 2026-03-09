@@ -9,7 +9,7 @@
 #include <franka/exception.h>
 #include <franka/model.h>
 #include <franka/robot.h>
-#include <research_interface/robot/service_types.h>
+#include <agimus_research_interface/robot/service_types.h>
 
 #include "helpers.h"
 #include "mock_server.h"
@@ -18,7 +18,7 @@
 using ::testing::_;
 using ::testing::Invoke;
 using ::testing::WithArgs;
-using namespace research_interface::robot;
+using namespace agimus_research_interface::robot;
 
 struct MockModel : public ModelLibraryInterface {
   MOCK_METHOD1(Ji_J_J1, void(double*));

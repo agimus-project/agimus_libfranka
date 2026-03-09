@@ -9,7 +9,7 @@ Logger::Logger(size_t log_size) : log_size_(log_size) {
   commands_.resize(log_size);
 }
 
-void Logger::log(const RobotState& state, const research_interface::robot::RobotCommand& command) {
+void Logger::log(const RobotState& state, const agimus_research_interface::robot::RobotCommand& command) {
   if (log_size_ == 0) {
     return;
   }

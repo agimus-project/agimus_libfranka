@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
 
     bool motion_finished = false;
     auto active_control = robot.startCartesianVelocityControl(
-        research_interface::robot::Move::ControllerMode::kJointImpedance);
+        agimus_research_interface::robot::Move::ControllerMode::kJointImpedance);
     while (!motion_finished) {
       auto read_once_return = active_control->readOnce();
       auto robot_state = read_once_return.first;

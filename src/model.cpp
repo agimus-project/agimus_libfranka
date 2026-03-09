@@ -6,7 +6,7 @@
 
 #include <Eigen/Core>
 
-#include <research_interface/robot/service_types.h>
+#include <agimus_research_interface/robot/service_types.h>
 
 #include "model_library.h"
 #include "network.h"

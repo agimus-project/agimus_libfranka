@@ -63,7 +63,7 @@ ControlLoop<T>::ControlLoop(RobotControl& robot,
   }
 
   motion_id_ = robot.startMotion(
-      research_interface::robot::Move::ControllerMode::kExternalController,
+      agimus_research_interface::robot::Move::ControllerMode::kExternalController,
       MotionGeneratorTraits<T>::kMotionGeneratorMode, kDefaultDeviation, kDefaultDeviation);
 }
 
@@ -77,7 +77,7 @@ ControlLoop<T>::ControlLoop(RobotControl& robot,
   if (!motion_callback_) {
     throw std::invalid_argument("libfranka: Invalid motion callback given.");
   }
-  research_interface::robot::Move::ControllerMode mode;
+  agimus_research_interface::robot::Move::ControllerMode mode;
   switch (controller_mode) {
     case ControllerMode::kJointImpedance:
       mode = decltype(mode)::kJointImpedance;
@@ -99,9 +99,9 @@ void ControlLoop<T>::operator()() try {
 
   Duration previous_time = robot_state.time;
 
-  research_interface::robot::MotionGeneratorCommand motion_command{};
+  agimus_research_interface::robot::MotionGeneratorCommand motion_command{};
   if (control_callback_) {
-    research_interface::robot::ControllerCommand control_command{};
+    agimus_research_interface::robot::ControllerCommand control_command{};
     while (spinMotion(robot_state, robot_state.time - previous_time, &motion_command) &&
            spinControl(robot_state, robot_state.time - previous_time, &control_command)) {
       previous_time = robot_state.time;
@@ -128,7 +128,7 @@ void ControlLoop<T>::operator()() try {
 template <typename T>
 bool ControlLoop<T>::spinControl(const RobotState& robot_state,
                                  franka::Duration time_step,
-                                 research_interface::robot::ControllerCommand* command) {
+                                 agimus_research_interface::robot::ControllerCommand* command) {
   Torques control_output = control_callback_(robot_state, time_step);
   if (cutoff_frequency_ < kMaxCutoffFrequency) {
     for (size_t i = 0; i < 7; i++) {
@@ -147,7 +147,7 @@ bool ControlLoop<T>::spinControl(const RobotState& robot_state,
 template <typename T>
 bool ControlLoop<T>::spinMotion(const RobotState& robot_state,
                                 franka::Duration time_step,
-                                research_interface::robot::MotionGeneratorCommand* command) {
+                                agimus_research_interface::robot::MotionGeneratorCommand* command) {
   T motion_output = motion_callback_(robot_state, time_step);
   convertMotion(motion_output, robot_state, command);
   return !motion_output.motion_finished;
@@ -157,7 +157,7 @@ template <>
 void ControlLoop<JointPositions>::convertMotion(
     const JointPositions& motion,
     const RobotState& robot_state,
-    research_interface::robot::MotionGeneratorCommand* command) {
+    agimus_research_interface::robot::MotionGeneratorCommand* command) {
   command->q_c = motion.q;
   if (cutoff_frequency_ < kMaxCutoffFrequency) {
     for (size_t i = 0; i < 7; i++) {
@@ -178,7 +178,7 @@ template <>
 void ControlLoop<JointVelocities>::convertMotion(
     const JointVelocities& motion,
     const RobotState& robot_state,
-    research_interface::robot::MotionGeneratorCommand* command) {
+    agimus_research_interface::robot::MotionGeneratorCommand* command) {
   command->dq_c = motion.dq;
   if (cutoff_frequency_ < kMaxCutoffFrequency) {
     for (size_t i = 0; i < 7; i++) {
@@ -199,7 +199,7 @@ template <>
 void ControlLoop<CartesianPose>::convertMotion(
     const CartesianPose& motion,
     const RobotState& robot_state,
-    research_interface::robot::MotionGeneratorCommand* command) {
+    agimus_research_interface::robot::MotionGeneratorCommand* command) {
   command->O_T_EE_c = motion.O_T_EE;
   if (cutoff_frequency_ < kMaxCutoffFrequency) {
     command->O_T_EE_c =
@@ -237,7 +237,7 @@ template <>
 void ControlLoop<CartesianVelocities>::convertMotion(
     const CartesianVelocities& motion,
     const RobotState& robot_state,
-    research_interface::robot::MotionGeneratorCommand* command) {
+    agimus_research_interface::robot::MotionGeneratorCommand* command) {
   command->O_dP_EE_c = motion.O_dP_EE;
   if (cutoff_frequency_ < kMaxCutoffFrequency) {
     for (size_t i = 0; i < 6; i++) {

@@ -6,9 +6,9 @@
 #include <iterator>
 #include <sstream>
 
-#include <research_interface/robot/error.h>
+#include <agimus_research_interface/robot/error.h>
 
-using Error = research_interface::robot::Error;
+using Error = agimus_research_interface::robot::Error;
 
 namespace franka {
 

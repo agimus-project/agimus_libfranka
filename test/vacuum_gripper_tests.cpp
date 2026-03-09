@@ -7,7 +7,7 @@
 
 #include <franka/exception.h>
 #include <franka/vacuum_gripper.h>
-#include <research_interface/vacuum_gripper/types.h>
+#include <agimus_research_interface/vacuum_gripper/types.h>
 
 #include "helpers.h"
 #include "mock_server.h"
@@ -19,8 +19,8 @@ using franka::IncompatibleVersionException;
 using franka::NetworkException;
 using franka::VacuumGripper;
 
-using research_interface::vacuum_gripper::Connect;
-using research_interface::vacuum_gripper::VacuumGripperState;
+using agimus_research_interface::vacuum_gripper::Connect;
+using agimus_research_interface::vacuum_gripper::VacuumGripperState;
 
 TEST(VacuumGripper, CannotConnectIfNoServerRunning) {
   EXPECT_THROW(VacuumGripper vacuum_gripper("127.0.0.1"), NetworkException)
@@ -31,7 +31,7 @@ TEST(VacuumGripper, CanPerformHandshake) {
   VacuumGripperMockServer server;
 
   VacuumGripper vacuum_gripper("127.0.0.1");
-  EXPECT_EQ(research_interface::vacuum_gripper::kVersion, vacuum_gripper.serverVersion());
+  EXPECT_EQ(agimus_research_interface::vacuum_gripper::kVersion, vacuum_gripper.serverVersion());
 }
 
 TEST(VacuumGripper, ThrowsOnIncompatibleLibraryVersion) {

@@ -23,10 +23,10 @@ using franka::JointVelocities;
 using franka::RobotState;
 using franka::Torques;
 
-using research_interface::robot::ControllerCommand;
-using research_interface::robot::MotionGeneratorCommand;
-using research_interface::robot::Move;
-using research_interface::robot::RobotCommand;
+using agimus_research_interface::robot::ControllerCommand;
+using agimus_research_interface::robot::MotionGeneratorCommand;
+using agimus_research_interface::robot::Move;
+using agimus_research_interface::robot::RobotCommand;
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -98,7 +98,7 @@ class ControlLoops : public ::testing::Test {
   using MotionGeneratorCallback = typename Loop::MotionGeneratorCallback;
   using ControlCallback = typename Loop::ControlCallback;
 
-  const research_interface::robot::Move::MotionGeneratorMode kMotionGeneratorMode =
+  const agimus_research_interface::robot::Move::MotionGeneratorMode kMotionGeneratorMode =
       franka::MotionGeneratorTraits<TMotion>::kMotionGeneratorMode;
 
   static constexpr bool kLimitRate = T::kLimitRate;
@@ -116,7 +116,7 @@ class ControlLoopWithTransformationMatrix : public ::testing::Test {
   using MotionGeneratorCallback = typename Loop::MotionGeneratorCallback;
   using ControlCallback = typename Loop::ControlCallback;
 
-  const research_interface::robot::Move::MotionGeneratorMode kMotionGeneratorMode =
+  const agimus_research_interface::robot::Move::MotionGeneratorMode kMotionGeneratorMode =
       franka::MotionGeneratorTraits<TMotion>::kMotionGeneratorMode;
 
   static constexpr bool kLimitRate = T::kLimitRate;
@@ -132,7 +132,7 @@ class ControlLoopWithElbow : public ::testing::Test {
   using MotionGeneratorCallback = typename Loop::MotionGeneratorCallback;
   using ControlCallback = typename Loop::ControlCallback;
 
-  const research_interface::robot::Move::MotionGeneratorMode kMotionGeneratorMode =
+  const agimus_research_interface::robot::Move::MotionGeneratorMode kMotionGeneratorMode =
       franka::MotionGeneratorTraits<TMotion>::kMotionGeneratorMode;
 
   static constexpr bool kLimitRate = T::kLimitRate;
@@ -186,22 +186,22 @@ JointPositions ControlLoops<JointPositionMotion<false, false>>::createInvalidMot
 
 template <>
 auto ControlLoops<JointPositionMotion<true, true>>::getField(const JointPositions& values) {
-  return Field(&research_interface::robot::MotionGeneratorCommand::q_c, Lt(values.q));
+  return Field(&agimus_research_interface::robot::MotionGeneratorCommand::q_c, Lt(values.q));
 }
 
 template <>
 auto ControlLoops<JointPositionMotion<false, true>>::getField(const JointPositions& values) {
-  return Field(&research_interface::robot::MotionGeneratorCommand::q_c, Lt(values.q));
+  return Field(&agimus_research_interface::robot::MotionGeneratorCommand::q_c, Lt(values.q));
 }
 
 template <>
 auto ControlLoops<JointPositionMotion<true, false>>::getField(const JointPositions& values) {
-  return Field(&research_interface::robot::MotionGeneratorCommand::q_c, Lt(values.q));
+  return Field(&agimus_research_interface::robot::MotionGeneratorCommand::q_c, Lt(values.q));
 }
 
 template <>
 auto ControlLoops<JointPositionMotion<false, false>>::getField(const JointPositions& values) {
-  return Field(&research_interface::robot::MotionGeneratorCommand::q_c, Eq(values.q));
+  return Field(&agimus_research_interface::robot::MotionGeneratorCommand::q_c, Eq(values.q));
 }
 
 template <>
@@ -250,22 +250,22 @@ JointVelocities ControlLoops<JointVelocityMotion<false, false>>::createInvalidMo
 
 template <>
 auto ControlLoops<JointVelocityMotion<true, true>>::getField(const JointVelocities& velocities) {
-  return Field(&research_interface::robot::MotionGeneratorCommand::dq_c, Lt(velocities.dq));
+  return Field(&agimus_research_interface::robot::MotionGeneratorCommand::dq_c, Lt(velocities.dq));
 }
 
 template <>
 auto ControlLoops<JointVelocityMotion<false, true>>::getField(const JointVelocities& velocities) {
-  return Field(&research_interface::robot::MotionGeneratorCommand::dq_c, Lt(velocities.dq));
+  return Field(&agimus_research_interface::robot::MotionGeneratorCommand::dq_c, Lt(velocities.dq));
 }
 
 template <>
 auto ControlLoops<JointVelocityMotion<true, false>>::getField(const JointVelocities& velocities) {
-  return Field(&research_interface::robot::MotionGeneratorCommand::dq_c, Lt(velocities.dq));
+  return Field(&agimus_research_interface::robot::MotionGeneratorCommand::dq_c, Lt(velocities.dq));
 }
 
 template <>
 auto ControlLoops<JointVelocityMotion<false, false>>::getField(const JointVelocities& velocities) {
-  return Field(&research_interface::robot::MotionGeneratorCommand::dq_c, Eq(velocities.dq));
+  return Field(&agimus_research_interface::robot::MotionGeneratorCommand::dq_c, Eq(velocities.dq));
 }
 
 template <>
@@ -346,34 +346,34 @@ CartesianPose ControlLoopWithTransformationMatrix<
 
 template <>
 auto ControlLoops<CartesianPoseMotion<true, true>>::getField(const CartesianPose& pose) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(std::array<double, 2>({0, 0}))),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
 }
 
 template <>
 auto ControlLoops<CartesianPoseMotion<false, true>>::getField(const CartesianPose& pose) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(std::array<double, 2>({0, 0}))),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
 }
 
 template <>
 auto ControlLoops<CartesianPoseMotion<true, false>>::getField(const CartesianPose& pose) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(std::array<double, 2>({0, 0}))),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
 }
 
 template <>
 auto ControlLoops<CartesianPoseMotion<false, false>>::getField(const CartesianPose& pose) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(std::array<double, 2>({0, 0}))),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
 }
 
 template <>
@@ -486,30 +486,30 @@ CartesianPose ControlLoopWithElbow<CartesianPoseMotionWithElbow<false, false>>::
 
 template <>
 auto ControlLoops<CartesianPoseMotionWithElbow<true, true>>::getField(const CartesianPose& pose) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c, Eq(pose.elbow)),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c, Eq(pose.elbow)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
 }
 
 template <>
 auto ControlLoops<CartesianPoseMotionWithElbow<false, true>>::getField(const CartesianPose& pose) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c, Eq(pose.elbow)),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c, Eq(pose.elbow)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
 }
 
 template <>
 auto ControlLoops<CartesianPoseMotionWithElbow<true, false>>::getField(const CartesianPose& pose) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c, Eq(pose.elbow)),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c, Eq(pose.elbow)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
 }
 
 template <>
 auto ControlLoops<CartesianPoseMotionWithElbow<false, false>>::getField(const CartesianPose& pose) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c, Eq(pose.elbow)),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_T_EE_c, Eq(pose.O_T_EE)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c, Eq(pose.elbow)),
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
 }
 
 template <>
@@ -559,41 +559,41 @@ CartesianVelocities ControlLoops<CartesianVelocityMotion<false, false>>::createI
 template <>
 auto ControlLoops<CartesianVelocityMotion<true, true>>::getField(
     const CartesianVelocities& cartesian_velocities) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
                      Lt(cartesian_velocities.O_dP_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(std::array<double, 2>({0, 0}))),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
 }
 
 template <>
 auto ControlLoops<CartesianVelocityMotion<false, true>>::getField(
     const CartesianVelocities& cartesian_velocities) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
                      Lt(cartesian_velocities.O_dP_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(std::array<double, 2>({0, 0}))),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
 }
 
 template <>
 auto ControlLoops<CartesianVelocityMotion<true, false>>::getField(
     const CartesianVelocities& cartesian_velocities) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
                      Lt(cartesian_velocities.O_dP_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(std::array<double, 2>({0, 0}))),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
 }
 
 template <>
 auto ControlLoops<CartesianVelocityMotion<false, false>>::getField(
     const CartesianVelocities& cartesian_velocities) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
                      Eq(cartesian_velocities.O_dP_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(std::array<double, 2>({0, 0}))),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(false)));
 }
 
 template <>
@@ -676,41 +676,41 @@ ControlLoopWithElbow<CartesianVelocityMotionWithElbow<false, false>>::createElbo
 template <>
 auto ControlLoops<CartesianVelocityMotionWithElbow<true, true>>::getField(
     const CartesianVelocities& cartesian_velocities) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
                      Lt(cartesian_velocities.O_dP_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(cartesian_velocities.elbow)),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
 }
 
 template <>
 auto ControlLoops<CartesianVelocityMotionWithElbow<false, true>>::getField(
     const CartesianVelocities& cartesian_velocities) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
                      Lt(cartesian_velocities.O_dP_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(cartesian_velocities.elbow)),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
 }
 
 template <>
 auto ControlLoops<CartesianVelocityMotionWithElbow<true, false>>::getField(
     const CartesianVelocities& cartesian_velocities) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
                      Lt(cartesian_velocities.O_dP_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(cartesian_velocities.elbow)),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
 }
 
 template <>
 auto ControlLoops<CartesianVelocityMotionWithElbow<false, false>>::getField(
     const CartesianVelocities& cartesian_velocities) {
-  return AllOf(Field(&research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
+  return AllOf(Field(&agimus_research_interface::robot::MotionGeneratorCommand::O_dP_EE_c,
                      Eq(cartesian_velocities.O_dP_EE)),
-               Field(&research_interface::robot::MotionGeneratorCommand::elbow_c,
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::elbow_c,
                      Eq(cartesian_velocities.elbow)),
-               Field(&research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
+               Field(&agimus_research_interface::robot::MotionGeneratorCommand::valid_elbow, Eq(true)));
 }
 
 using MotionTypes = ::testing::Types<JointPositionMotion<false, true>,

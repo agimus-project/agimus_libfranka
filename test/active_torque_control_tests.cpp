@@ -15,7 +15,7 @@
 
 using ::testing::Matcher;
 
-using namespace research_interface;
+using namespace agimus_research_interface;
 
 using namespace franka;
 

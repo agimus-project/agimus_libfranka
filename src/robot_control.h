@@ -6,8 +6,8 @@
 
 #include <franka/control_types.h>
 #include <franka/robot_state.h>
-#include <research_interface/robot/rbk_types.h>
-#include <research_interface/robot/service_types.h>
+#include <agimus_research_interface/robot/rbk_types.h>
+#include <agimus_research_interface/robot/service_types.h>
 
 namespace franka {
 
@@ -16,19 +16,19 @@ class RobotControl {
   virtual ~RobotControl() = default;
 
   virtual uint32_t startMotion(
-      research_interface::robot::Move::ControllerMode controller_mode,
-      research_interface::robot::Move::MotionGeneratorMode motion_generator_mode,
-      const research_interface::robot::Move::Deviation& maximum_path_deviation,
-      const research_interface::robot::Move::Deviation& maximum_goal_pose_deviation) = 0;
+      agimus_research_interface::robot::Move::ControllerMode controller_mode,
+      agimus_research_interface::robot::Move::MotionGeneratorMode motion_generator_mode,
+      const agimus_research_interface::robot::Move::Deviation& maximum_path_deviation,
+      const agimus_research_interface::robot::Move::Deviation& maximum_goal_pose_deviation) = 0;
   virtual void finishMotion(
       uint32_t motion_id,
-      const research_interface::robot::MotionGeneratorCommand* motion_command,
-      const research_interface::robot::ControllerCommand* control_command) = 0;
+      const agimus_research_interface::robot::MotionGeneratorCommand* motion_command,
+      const agimus_research_interface::robot::ControllerCommand* control_command) = 0;
   virtual void cancelMotion(uint32_t motion_id) = 0;
 
   virtual RobotState update(
-      const research_interface::robot::MotionGeneratorCommand* motion_command,
-      const research_interface::robot::ControllerCommand* control_command) = 0;
+      const agimus_research_interface::robot::MotionGeneratorCommand* motion_command,
+      const agimus_research_interface::robot::ControllerCommand* control_command) = 0;
 
   virtual void throwOnMotionError(const RobotState& robot_state, uint32_t motion_id) = 0;
 

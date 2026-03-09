@@ -92,7 +92,7 @@ TEST(RobotState, CanAssign) {
 }
 
 TEST(RobotState, CanConvert) {
-  research_interface::robot::RobotState original;
+  agimus_research_interface::robot::RobotState original;
   randomRobotState(original);
 
   RobotState converted = convertRobotState(original);

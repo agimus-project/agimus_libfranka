@@ -13,7 +13,7 @@
 #include <franka/exception.h>
 #include <franka/lowpass_filter.h>
 #include <franka/robot.h>
-#include <research_interface/robot/service_types.h>
+#include <agimus_research_interface/robot/service_types.h>
 #include <robot_impl.h>
 
 #include "helpers.h"
@@ -24,10 +24,10 @@
 using ::testing::_;
 using ::testing::Return;
 
-using research_interface::robot::Connect;
-using research_interface::robot::Move;
-using research_interface::robot::StopMove;
-using namespace research_interface;
+using agimus_research_interface::robot::Connect;
+using agimus_research_interface::robot::Move;
+using agimus_research_interface::robot::StopMove;
+using namespace agimus_research_interface;
 
 using namespace franka;
 using namespace std::chrono_literals;
@@ -41,7 +41,7 @@ TEST(Robot, CanPerformHandshake) {
   RobotMockServer server;
 
   Robot robot("127.0.0.1");
-  EXPECT_EQ(research_interface::robot::kVersion, robot.serverVersion());
+  EXPECT_EQ(agimus_research_interface::robot::kVersion, robot.serverVersion());
 }
 
 TEST(Robot, ThrowsOnIncompatibleLibraryVersion) {
@@ -60,7 +60,7 @@ TEST(Robot, CanReadRobotState) {
   RobotMockServer server;
   Robot robot("127.0.0.1");
 
-  server.sendEmptyState<research_interface::robot::RobotState>().spinOnce();
+  server.sendEmptyState<agimus_research_interface::robot::RobotState>().spinOnce();
 
   MockCallback callback;
   EXPECT_CALL(callback, invoke(_));
@@ -76,19 +76,19 @@ TEST(Robot, CanReadRobotStateAfterInstanceMove) {
   RobotMockServer server;
 
   Robot robot("127.0.0.1");
-  server.sendEmptyState<research_interface::robot::RobotState>().spinOnce();
+  server.sendEmptyState<agimus_research_interface::robot::RobotState>().spinOnce();
   EXPECT_CALL(callback, invoke(_));
   robot.read([&](const RobotState& robot_state) { return callback.invoke(robot_state); });
 
   // Move constructor
   Robot robot2(std::move(robot));
-  server.sendEmptyState<research_interface::robot::RobotState>().spinOnce();
+  server.sendEmptyState<agimus_research_interface::robot::RobotState>().spinOnce();
   EXPECT_CALL(callback, invoke(_));
   robot2.read([&](const RobotState& robot_state) { return callback.invoke(robot_state); });
 
   // Move assignment
   robot = std::move(robot2);
-  server.sendEmptyState<research_interface::robot::RobotState>().spinOnce();
+  server.sendEmptyState<agimus_research_interface::robot::RobotState>().spinOnce();
   EXPECT_CALL(callback, invoke(_));
   robot.read([&](const RobotState& robot_state) { return callback.invoke(robot_state); });
 }

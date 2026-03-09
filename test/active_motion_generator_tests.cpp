@@ -15,7 +15,7 @@
 
 using ::testing::Matcher;
 
-using namespace research_interface;
+using namespace agimus_research_interface;
 
 using namespace franka;
 
@@ -30,7 +30,7 @@ class ActiveMotionGeneratorTest : public ::testing::Test {
         robot_(RobotMock(robot_impl_mock_)){};
 
   std::unique_ptr<ActiveControlBase> startControl(
-      research_interface::robot::Move::ControllerMode controller_mode);
+      agimus_research_interface::robot::Move::ControllerMode controller_mode);
 
   using CurrentMotionGeneratorType = MotionGeneratorType;
 
@@ -50,7 +50,7 @@ class ActiveMotionGeneratorTest : public ::testing::Test {
 
 template <>
 std::unique_ptr<ActiveControlBase> ActiveMotionGeneratorTest<JointPositions>::startControl(
-    research_interface::robot::Move::ControllerMode controller_mode) {
+    agimus_research_interface::robot::Move::ControllerMode controller_mode) {
   EXPECT_CALL(*robot_impl_mock_, startMotion(testing::_, testing::_, testing::_, testing::_))
       .Times(1)
       .WillOnce(::testing::Return(default_motion_id));
@@ -60,7 +60,7 @@ std::unique_ptr<ActiveControlBase> ActiveMotionGeneratorTest<JointPositions>::st
 
 template <>
 std::unique_ptr<ActiveControlBase> ActiveMotionGeneratorTest<JointVelocities>::startControl(
-    research_interface::robot::Move::ControllerMode controller_mode) {
+    agimus_research_interface::robot::Move::ControllerMode controller_mode) {
   EXPECT_CALL(*robot_impl_mock_, startMotion(testing::_, testing::_, testing::_, testing::_))
       .Times(1)
       .WillOnce(::testing::Return(default_motion_id));
@@ -70,7 +70,7 @@ std::unique_ptr<ActiveControlBase> ActiveMotionGeneratorTest<JointVelocities>::s
 
 template <>
 std::unique_ptr<ActiveControlBase> ActiveMotionGeneratorTest<CartesianPose>::startControl(
-    research_interface::robot::Move::ControllerMode controller_mode) {
+    agimus_research_interface::robot::Move::ControllerMode controller_mode) {
   EXPECT_CALL(*robot_impl_mock_, startMotion(testing::_, testing::_, testing::_, testing::_))
       .Times(1)
       .WillOnce(::testing::Return(default_motion_id));
@@ -80,7 +80,7 @@ std::unique_ptr<ActiveControlBase> ActiveMotionGeneratorTest<CartesianPose>::sta
 
 template <>
 std::unique_ptr<ActiveControlBase> ActiveMotionGeneratorTest<CartesianVelocities>::startControl(
-    research_interface::robot::Move::ControllerMode controller_mode) {
+    agimus_research_interface::robot::Move::ControllerMode controller_mode) {
   EXPECT_CALL(*robot_impl_mock_, startMotion(testing::_, testing::_, testing::_, testing::_))
       .Times(1)
       .WillOnce(::testing::Return(default_motion_id));
@@ -97,7 +97,7 @@ TYPED_TEST(ActiveMotionGeneratorTest, CanWriteOnceIfControlNotFinished) {
   using CurrentMotionGeneratorType = typename TestFixture::CurrentMotionGeneratorType;
 
   auto active_control =
-      this->startControl(research_interface::robot::Move::ControllerMode::kCartesianImpedance);
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kCartesianImpedance);
 
   EXPECT_CALL(*(this->robot_impl_mock_), cancelMotion(this->default_motion_id)).Times(1);
   if (std::is_same<CurrentMotionGeneratorType, JointPositions>::value ||
@@ -127,7 +127,7 @@ TYPED_TEST(ActiveMotionGeneratorTest, CanWriteOnceWithExternalControllerIfContro
   using CurrentMotionGeneratorType = typename TestFixture::CurrentMotionGeneratorType;
 
   auto active_control =
-      this->startControl(research_interface::robot::Move::ControllerMode::kExternalController);
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kExternalController);
 
   EXPECT_CALL(*(this->robot_impl_mock_), cancelMotion(this->default_motion_id)).Times(1);
   if (std::is_same<CurrentMotionGeneratorType, JointPositions>::value ||
@@ -159,7 +159,7 @@ TYPED_TEST(ActiveMotionGeneratorTest, CanWriteOnceWithExternalControllerIfContro
 TYPED_TEST(ActiveMotionGeneratorTest, CanCallFinishMotionWhenFinished) {
   using CurrentMotionGeneratorType = typename TestFixture::CurrentMotionGeneratorType;
   auto active_control =
-      this->startControl(research_interface::robot::Move::ControllerMode::kCartesianImpedance);
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kCartesianImpedance);
 
   EXPECT_CALL(*(this->robot_impl_mock_),
               finishMotion(this->default_motion_id, testing::_, testing::_))
@@ -185,7 +185,7 @@ TYPED_TEST(ActiveMotionGeneratorTest, CanCallFinishMotionWhenFinished) {
 TYPED_TEST(ActiveMotionGeneratorTest, CanCallFinishMotionWithExternalControllerWhenFinished) {
   using CurrentMotionGeneratorType = typename TestFixture::CurrentMotionGeneratorType;
   auto active_control =
-      this->startControl(research_interface::robot::Move::ControllerMode::kExternalController);
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kExternalController);
 
   EXPECT_CALL(*(this->robot_impl_mock_),
               finishMotion(this->default_motion_id, testing::_, testing::_))
@@ -211,7 +211,7 @@ TYPED_TEST(ActiveMotionGeneratorTest, CanCallFinishMotionWithExternalControllerW
 TYPED_TEST(ActiveMotionGeneratorTest, CanNotWriteOnceIfControlFinished) {
   using CurrentMotionGeneratorType = typename TestFixture::CurrentMotionGeneratorType;
   auto active_control =
-      this->startControl(research_interface::robot::Move::ControllerMode::kCartesianImpedance);
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kCartesianImpedance);
 
   EXPECT_CALL(*(this->robot_impl_mock_),
               finishMotion(this->default_motion_id, testing::_, testing::_))
@@ -240,7 +240,7 @@ TYPED_TEST(ActiveMotionGeneratorTest, CanNotWriteOnceIfControlFinished) {
 TYPED_TEST(ActiveMotionGeneratorTest, CanNotWriteOnceWithExternalControllerIfControlFinished) {
   using CurrentMotionGeneratorType = typename TestFixture::CurrentMotionGeneratorType;
   auto active_control =
-      this->startControl(research_interface::robot::Move::ControllerMode::kExternalController);
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kExternalController);
 
   EXPECT_CALL(*(this->robot_impl_mock_),
               finishMotion(this->default_motion_id, testing::_, testing::_))
@@ -272,7 +272,7 @@ TYPED_TEST(ActiveMotionGeneratorTest, CanNotWriteOnceWithExternalControllerIfCon
 TYPED_TEST(ActiveMotionGeneratorTest, ControlTokenReleasedAfterFinishingControl) {
   using CurrentMotionGeneratorType = typename TestFixture::CurrentMotionGeneratorType;
   auto active_control =
-      this->startControl(research_interface::robot::Move::ControllerMode::kCartesianImpedance);
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kCartesianImpedance);
 
   EXPECT_CALL(*(this->robot_impl_mock_),
               finishMotion(this->default_motion_id, testing::_, testing::_))
@@ -296,14 +296,14 @@ TYPED_TEST(ActiveMotionGeneratorTest, ControlTokenReleasedAfterFinishingControl)
 
   EXPECT_CALL(*(this->robot_impl_mock_), cancelMotion(this->default_motion_id)).Times(1);
   EXPECT_NO_THROW(
-      this->startControl(research_interface::robot::Move::ControllerMode::kCartesianImpedance));
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kCartesianImpedance));
 }
 
 TYPED_TEST(ActiveMotionGeneratorTest,
            ControlTokenReleasedWithExternalControllerAfterFinishingControl) {
   using CurrentMotionGeneratorType = typename TestFixture::CurrentMotionGeneratorType;
   auto active_control =
-      this->startControl(research_interface::robot::Move::ControllerMode::kExternalController);
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kExternalController);
 
   EXPECT_CALL(*(this->robot_impl_mock_),
               finishMotion(this->default_motion_id, testing::_, testing::_))
@@ -327,14 +327,14 @@ TYPED_TEST(ActiveMotionGeneratorTest,
 
   EXPECT_CALL(*(this->robot_impl_mock_), cancelMotion(this->default_motion_id)).Times(1);
   EXPECT_NO_THROW(
-      this->startControl(research_interface::robot::Move::ControllerMode::kExternalController));
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kExternalController));
 }
 
 TYPED_TEST(ActiveMotionGeneratorTest, UnintendedWriteOnceMethodsThrowException) {
   using CurrentMotionGeneratorType = typename TestFixture::CurrentMotionGeneratorType;
 
   auto active_control =
-      this->startControl(research_interface::robot::Move::ControllerMode::kCartesianImpedance);
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kCartesianImpedance);
 
   EXPECT_CALL(*(this->robot_impl_mock_), cancelMotion(this->default_motion_id)).Times(1);
 
@@ -371,7 +371,7 @@ TYPED_TEST(ActiveMotionGeneratorTest,
   using CurrentMotionGeneratorType = typename TestFixture::CurrentMotionGeneratorType;
 
   auto active_control =
-      this->startControl(research_interface::robot::Move::ControllerMode::kExternalController);
+      this->startControl(agimus_research_interface::robot::Move::ControllerMode::kExternalController);
 
   EXPECT_CALL(*(this->robot_impl_mock_), cancelMotion(this->default_motion_id)).Times(1);
 

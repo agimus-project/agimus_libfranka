@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include <franka/exception.h>
-#include <research_interface/gripper/types.h>
+#include <agimus_research_interface/gripper/types.h>
 
 #include "network.h"
 
@@ -33,7 +33,7 @@ bool executeCommand(Network& network, TArgs&&... args) {
 }
 
 GripperState convertGripperState(
-    const research_interface::gripper::GripperState& gripper_state) noexcept {
+    const agimus_research_interface::gripper::GripperState& gripper_state) noexcept {
   GripperState converted;
   converted.width = gripper_state.width;
   converted.max_width = gripper_state.max_width;
@@ -47,8 +47,8 @@ GripperState convertGripperState(
 
 Gripper::Gripper(const std::string& franka_address)
     : network_{
-          std::make_unique<Network>(franka_address, research_interface::gripper::kCommandPort)} {
-  connect<research_interface::gripper::Connect, research_interface::gripper::kVersion>(
+          std::make_unique<Network>(franka_address, agimus_research_interface::gripper::kCommandPort)} {
+  connect<agimus_research_interface::gripper::Connect, agimus_research_interface::gripper::kVersion>(
       *network_, &ri_version_);
 }
 
@@ -61,7 +61,7 @@ Gripper::ServerVersion Gripper::serverVersion() const noexcept {
 }
 
 bool Gripper::homing() const {
-  return executeCommand<research_interface::gripper::Homing>(*network_);
+  return executeCommand<agimus_research_interface::gripper::Homing>(*network_);
 }
 
 bool Gripper::grasp(double width,
@@ -69,21 +69,21 @@ bool Gripper::grasp(double width,
                     double force,
                     double epsilon_inner,
                     double epsilon_outer) const {
-  research_interface::gripper::Grasp::GraspEpsilon epsilon(epsilon_inner, epsilon_outer);
-  return executeCommand<research_interface::gripper::Grasp>(*network_, width, epsilon, speed,
+  agimus_research_interface::gripper::Grasp::GraspEpsilon epsilon(epsilon_inner, epsilon_outer);
+  return executeCommand<agimus_research_interface::gripper::Grasp>(*network_, width, epsilon, speed,
                                                             force);
 }
 
 bool Gripper::move(double width, double speed) const {
-  return executeCommand<research_interface::gripper::Move>(*network_, width, speed);
+  return executeCommand<agimus_research_interface::gripper::Move>(*network_, width, speed);
 }
 
 bool Gripper::stop() const {
-  return executeCommand<research_interface::gripper::Stop>(*network_);
+  return executeCommand<agimus_research_interface::gripper::Stop>(*network_);
 }
 
 GripperState Gripper::readOnce() const {
-  research_interface::gripper::GripperState gripper_state;
+  agimus_research_interface::gripper::GripperState gripper_state;
   // Delete old data from the UDP buffer.
   while (network_->udpReceive<decltype(gripper_state)>(&gripper_state)) {
   }

@@ -9,7 +9,7 @@
 #include <Poco/SharedLibrary.h>
 
 #include <franka/exception.h>
-#include <research_interface/robot/service_types.h>
+#include <agimus_research_interface/robot/service_types.h>
 
 #include "platform.h"
 
@@ -17,7 +17,7 @@ namespace franka {
 
 LibraryDownloader::LibraryDownloader(Network& network)
     : model_library_file_{Poco::TemporaryFile::tempName() + Poco::SharedLibrary::suffix()} {
-  using research_interface::robot::LoadModelLibrary;
+  using agimus_research_interface::robot::LoadModelLibrary;
   LoadModelLibrary::Architecture architecture;
   LoadModelLibrary::System operating_system;
 

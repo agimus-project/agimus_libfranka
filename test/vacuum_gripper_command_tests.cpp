@@ -16,7 +16,7 @@ using franka::Network;
 using franka::VacuumGripper;
 using franka::VacuumGripperState;
 
-using namespace research_interface::vacuum_gripper;
+using namespace agimus_research_interface::vacuum_gripper;
 
 template <typename T>
 class VacuumGripperCommand : public ::testing::Test {

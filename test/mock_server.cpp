@@ -47,7 +47,7 @@ MockServer<C>& MockServer<C>::onReceiveRobotCommand(
     ReceiveRobotCommandCallbackT on_receive_robot_command) {
   std::lock_guard<std::mutex> _(command_mutex_);
   commands_.emplace_back("onReceiveRobotCommand", [=](Socket&, Socket& udp_socket) {
-    research_interface::robot::RobotCommand robot_command;
+    agimus_research_interface::robot::RobotCommand robot_command;
     udp_socket.receiveBytes(&robot_command, sizeof(robot_command));
     if (on_receive_robot_command) {
       on_receive_robot_command(robot_command);
@@ -175,7 +175,7 @@ void MockServer<C>::sendInitialState(Socket&) {}
 
 template <>
 void MockServer<RobotTypes>::sendInitialState(Socket& udp_socket) {
-  research_interface::robot::RobotState state{};
+  agimus_research_interface::robot::RobotState state{};
   state.message_id = ++sequence_number_;
   udp_socket.sendBytes(&state, sizeof(state));
 }

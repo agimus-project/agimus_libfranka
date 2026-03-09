@@ -15,9 +15,9 @@ void ActiveTorqueControl::writeOnce(const Torques& control_input) {
   }
 
   if (control_input.motion_finished) {
-    research_interface::robot::MotionGeneratorCommand motion_command{};
+    agimus_research_interface::robot::MotionGeneratorCommand motion_command{};
     motion_command.dq_c = {0, 0, 0, 0, 0, 0, 0};
-    research_interface::robot::ControllerCommand controller_command =
+    agimus_research_interface::robot::ControllerCommand controller_command =
         robot_impl->createControllerCommand(control_input);
 
     robot_impl->finishMotion(motion_id, &motion_command, &controller_command);

@@ -11,9 +11,9 @@
 #include <franka/log.h>
 #include <franka/robot_state.h>
 #include <franka/vacuum_gripper_state.h>
-#include <research_interface/gripper/types.h>
-#include <research_interface/robot/rbk_types.h>
-#include <research_interface/robot/service_types.h>
+#include <agimus_research_interface/gripper/types.h>
+#include <agimus_research_interface/robot/rbk_types.h>
+#include <agimus_research_interface/robot/service_types.h>
 
 bool stringContains(const std::string& actual, const std::string& expected);
 
@@ -39,21 +39,21 @@ std::vector<T> findDuplicates(const std::vector<T>& xs) {
 }
 
 void randomRobotState(franka::RobotState& robot_state);
-void randomRobotState(research_interface::robot::RobotState& robot_state);
+void randomRobotState(agimus_research_interface::robot::RobotState& robot_state);
 void testRobotStateIsZero(const franka::RobotState& actual);
-void testRobotStatesAreEqual(const research_interface::robot::RobotState& expected,
+void testRobotStatesAreEqual(const agimus_research_interface::robot::RobotState& expected,
                              const franka::RobotState& actual);
 void testRobotStatesAreEqual(const franka::RobotState& expected, const franka::RobotState& actual);
 
-void randomRobotCommand(research_interface::robot::RobotCommand& command);
+void randomRobotCommand(agimus_research_interface::robot::RobotCommand& command);
 void testMotionGeneratorCommandsAreEqual(
-    const research_interface::robot::MotionGeneratorCommand& expected,
-    const research_interface::robot::MotionGeneratorCommand& actual);
-void testControllerCommandsAreEqual(const research_interface::robot::ControllerCommand& expected,
-                                    const research_interface::robot::ControllerCommand& actual);
-void testRobotCommandsAreEqual(const research_interface::robot::RobotCommand& expected,
-                               const research_interface::robot::RobotCommand& actual);
-void testRobotCommandsAreEqual(const research_interface::robot::RobotCommand& expected,
+    const agimus_research_interface::robot::MotionGeneratorCommand& expected,
+    const agimus_research_interface::robot::MotionGeneratorCommand& actual);
+void testControllerCommandsAreEqual(const agimus_research_interface::robot::ControllerCommand& expected,
+                                    const agimus_research_interface::robot::ControllerCommand& actual);
+void testRobotCommandsAreEqual(const agimus_research_interface::robot::RobotCommand& expected,
+                               const agimus_research_interface::robot::RobotCommand& actual);
+void testRobotCommandsAreEqual(const agimus_research_interface::robot::RobotCommand& expected,
                                const franka::RobotCommand actual);
 std::array<double, 16> identityMatrix();
 franka::RobotState generateValidRobotState();
@@ -61,13 +61,13 @@ std::array<double, 6> differentiateOneSample(std::array<double, 16> value,
                                              std::array<double, 16> last_value,
                                              double delta_t);
 
-namespace research_interface {
+namespace agimus_research_interface {
 namespace robot {
 
 bool operator==(const Move::Deviation& left, const Move::Deviation& right);
 
 }  // namespace robot
-}  // namespace research_interface
+}  // namespace agimus_research_interface
 
 namespace franka {
 

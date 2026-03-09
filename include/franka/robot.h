@@ -11,7 +11,7 @@
 #include <franka/duration.h>
 #include <franka/lowpass_filter.h>
 #include <franka/robot_state.h>
-#include <research_interface/robot/service_types.h>
+#include <agimus_research_interface/robot/service_types.h>
 
 /**
  * @file robot.h
@@ -655,7 +655,7 @@ class Robot {
   /**
    * Starts a new joint position motion generator
    *
-   * @param control_type research_interface::robot::Move::ControllerMode control type for the
+   * @param control_type agimus_research_interface::robot::Move::ControllerMode control type for the
    * operation
    * @return unique_ptr of ActiveMotionGenerator for the started motion
    *
@@ -666,12 +666,12 @@ class Robot {
    * @throw std::invalid_argument if joint-level torque commands are NaN or infinity.
    */
   virtual std::unique_ptr<ActiveControlBase> startJointPositionControl(
-      const research_interface::robot::Move::ControllerMode& control_type);
+      const agimus_research_interface::robot::Move::ControllerMode& control_type);
 
   /**
    * Starts a new joint velocity motion generator
    *
-   * @param control_type research_interface::robot::Move::ControllerMode control type for the
+   * @param control_type agimus_research_interface::robot::Move::ControllerMode control type for the
    * operation
    * @return unique_ptr of ActiveMotionGenerator for the started motion
    * @throw ControlException if an error related to torque control or motion generation
@@ -681,12 +681,12 @@ class Robot {
    * @throw std::invalid_argument if joint-level torque commands are NaN or infinity.
    */
   virtual std::unique_ptr<ActiveControlBase> startJointVelocityControl(
-      const research_interface::robot::Move::ControllerMode& control_type);
+      const agimus_research_interface::robot::Move::ControllerMode& control_type);
 
   /**
    * Starts a new cartesian position motion generator
    *
-   * @param control_type research_interface::robot::Move::ControllerMode control type for the
+   * @param control_type agimus_research_interface::robot::Move::ControllerMode control type for the
    * operation
    * @return unique_ptr of ActiveMotionGenerator for the started motion
    * @throw ControlException if an error related to torque control or motion generation
@@ -696,12 +696,12 @@ class Robot {
    * @throw std::invalid_argument if joint-level torque commands are NaN or infinity.
    */
   virtual std::unique_ptr<ActiveControlBase> startCartesianPoseControl(
-      const research_interface::robot::Move::ControllerMode& control_type);
+      const agimus_research_interface::robot::Move::ControllerMode& control_type);
 
   /**
    * Starts a new cartesian velocity motion generator
    *
-   * @param control_type research_interface::robot::Move::ControllerMode control type for the
+   * @param control_type agimus_research_interface::robot::Move::ControllerMode control type for the
    * operation
    * @return unique_ptr of ActiveMotionGenerator for the started motion
    *
@@ -712,7 +712,7 @@ class Robot {
    * @throw std::invalid_argument if joint-level torque commands are NaN or infinity.
    */
   virtual std::unique_ptr<ActiveControlBase> startCartesianVelocityControl(
-      const research_interface::robot::Move::ControllerMode& control_type);
+      const agimus_research_interface::robot::Move::ControllerMode& control_type);
 
   /**
    * Stops all currently running motions.
@@ -783,7 +783,7 @@ class Robot {
    */
   template <typename T>
   std::unique_ptr<ActiveControlBase> startControl(
-      const research_interface::robot::Move::ControllerMode& controller_type);
+      const agimus_research_interface::robot::Move::ControllerMode& controller_type);
 
   std::shared_ptr<Impl> impl_;
   std::mutex control_mutex_;

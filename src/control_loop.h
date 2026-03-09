@@ -8,7 +8,7 @@
 #include <franka/control_types.h>
 #include <franka/duration.h>
 #include <franka/robot_state.h>
-#include <research_interface/robot/rbk_types.h>
+#include <agimus_research_interface/robot/rbk_types.h>
 
 #include "robot_control.h"
 
@@ -17,7 +17,7 @@ namespace franka {
 template <typename T>
 class ControlLoop {
  public:
-  static constexpr research_interface::robot::Move::Deviation kDefaultDeviation{10.0, 3.12,
+  static constexpr agimus_research_interface::robot::Move::Deviation kDefaultDeviation{10.0, 3.12,
                                                                                 2 * M_PI};
 
   using ControlCallback = std::function<Torques(const RobotState&, franka::Duration)>;
@@ -45,10 +45,10 @@ class ControlLoop {
 
   bool spinControl(const RobotState& robot_state,
                    franka::Duration time_step,
-                   research_interface::robot::ControllerCommand* command);
+                   agimus_research_interface::robot::ControllerCommand* command);
   bool spinMotion(const RobotState& robot_state,
                   franka::Duration time_step,
-                  research_interface::robot::MotionGeneratorCommand* command);
+                  agimus_research_interface::robot::MotionGeneratorCommand* command);
 
  private:
   RobotControl& robot_;
@@ -60,7 +60,7 @@ class ControlLoop {
 
   void convertMotion(const T& motion,
                      const RobotState& robot_state,
-                     research_interface::robot::MotionGeneratorCommand* command);
+                     agimus_research_interface::robot::MotionGeneratorCommand* command);
 };
 
 }  // namespace franka

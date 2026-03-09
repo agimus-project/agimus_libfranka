@@ -7,7 +7,7 @@
 
 #include <franka/exception.h>
 #include <franka/gripper.h>
-#include <research_interface/gripper/types.h>
+#include <agimus_research_interface/gripper/types.h>
 
 #include "helpers.h"
 #include "mock_server.h"
@@ -19,8 +19,8 @@ using franka::Gripper;
 using franka::IncompatibleVersionException;
 using franka::NetworkException;
 
-using research_interface::gripper::Connect;
-using research_interface::gripper::GripperState;
+using agimus_research_interface::gripper::Connect;
+using agimus_research_interface::gripper::GripperState;
 
 TEST(Gripper, CannotConnectIfNoServerRunning) {
   EXPECT_THROW(Gripper gripper("127.0.0.1"), NetworkException)
@@ -31,7 +31,7 @@ TEST(Gripper, CanPerformHandshake) {
   GripperMockServer server;
 
   Gripper gripper("127.0.0.1");
-  EXPECT_EQ(research_interface::gripper::kVersion, gripper.serverVersion());
+  EXPECT_EQ(agimus_research_interface::gripper::kVersion, gripper.serverVersion());
 }
 
 TEST(Gripper, ThrowsOnIncompatibleLibraryVersion) {

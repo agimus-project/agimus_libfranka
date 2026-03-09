@@ -4,7 +4,7 @@
 #include <franka/active_motion_generator.h>
 #include <franka/exception.h>
 #include <franka/robot.h>
-#include <research_interface/robot/rbk_types.h>
+#include <agimus_research_interface/robot/rbk_types.h>
 
 #include "robot_impl.h"
 
@@ -28,12 +28,12 @@ void ActiveMotionGenerator<MotionGeneratorType>::writeOnce(
   }
 
   if (control_input.has_value() &&
-      controller_type_ != research_interface::robot::Move::ControllerMode::kExternalController) {
+      controller_type_ != agimus_research_interface::robot::Move::ControllerMode::kExternalController) {
     throw franka::ControlException("Torques can only be commanded in kExternalController mode.");
   }
 
   if (!control_input.has_value() &&
-      controller_type_ == research_interface::robot::Move::ControllerMode::kExternalController) {
+      controller_type_ == agimus_research_interface::robot::Move::ControllerMode::kExternalController) {
     throw franka::ControlException(
         "Torque command missing, please use writeOnce(const MotionGeneratorType& "
         "motion_generator_input, const Torques& control_input) for external controllers.");
