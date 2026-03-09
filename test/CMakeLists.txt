@@ -2,29 +2,28 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 set(TEST_OUTPUT_DIR ${PROJECT_BINARY_DIR}/test_results)
 set(TEST_DEPENDENCIES
-  GTest::gmock
-  GTest::gtest_main
-  Poco::Foundation
-  Poco::Net
-  Eigen3::Eigen
-  Threads::Threads
-  agimus_libfranka::agimus_libfranka
-  agimus-libfranka-common::agimus-libfranka-common
-)
-set(TEST_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+    GTest::gmock
+    GTest::gtest_main
+    Poco::Foundation
+    Poco::Net
+    Eigen3::Eigen
+    Threads::Threads
+    agimus_libfranka::agimus_libfranka
+    agimus-libfranka-common::agimus-libfranka-common)
+set(TEST_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}
+                             ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
-## Test libraries
-add_library(fcimodels SHARED
-  libfcimodels_stub.cpp
-)
+# Test libraries
+add_library(fcimodels SHARED libfcimodels_stub.cpp)
 
 target_include_directories(fcimodels PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(fcimodels PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
 list(APPEND TEST_DEPENDENCIES fcimodels)
 
-## Test runner
-add_executable(run_all_tests
+# Test runner
+add_executable(
+  run_all_tests
   active_motion_generator_tests.cpp
   active_torque_control_tests.cpp
   calculations_tests.cpp
@@ -45,19 +44,20 @@ add_executable(run_all_tests
   robot_state_tests.cpp
   robot_tests.cpp
   vacuum_gripper_tests.cpp
-  vacuum_gripper_command_tests.cpp
-)
+  vacuum_gripper_command_tests.cpp)
 
-set(TEST_COMPILE_DEFINITIONS FRANKA_TEST_BINARY_DIR="${CMAKE_CURRENT_BINARY_DIR}")
+set(TEST_COMPILE_DEFINITIONS
+    FRANKA_TEST_BINARY_DIR="${CMAKE_CURRENT_BINARY_DIR}")
 target_compile_definitions(run_all_tests PRIVATE ${TEST_COMPILE_DEFINITIONS})
 if(WIN32)
-    target_compile_options(run_all_tests PRIVATE /bigobj)
+  target_compile_options(run_all_tests PRIVATE /bigobj)
 endif(WIN32)
 
 target_include_directories(run_all_tests PRIVATE ${TEST_INCLUDE_DIRECTORIES})
 target_link_libraries(run_all_tests PUBLIC ${TEST_DEPENDENCIES})
 
-add_test(Default run_all_tests --gtest_output=xml:${TEST_OUTPUT_DIR}/default.xml)
+add_test(Default run_all_tests
+         --gtest_output=xml:${TEST_OUTPUT_DIR}/default.xml)
 
 if(BUILD_COVERAGE)
   find_program(LCOV_PROG lcov)
@@ -73,25 +73,27 @@ if(BUILD_COVERAGE)
   set(COVERAGE_REPORT_DIR "coverage")
   set(COVERAGE_FILE "all_tests.coverage")
 
-  add_custom_target(coverage
+  add_custom_target(
+    coverage
     COMMAND ${LCOV_PROG} --directory . --zerocounters
     COMMAND ${CMAKE_CTEST_COMMAND} -R Default .
     COMMAND ${LCOV_PROG} --directory . --capture --output-file ${COVERAGE_FILE}
-    COMMAND ${LCOV_PROG} --remove ${COVERAGE_FILE} 'test/*' '/usr/*' --output-file ${COVERAGE_FILE}
+    COMMAND ${LCOV_PROG} --remove ${COVERAGE_FILE} 'test/*' '/usr/*'
+            --output-file ${COVERAGE_FILE}
     COMMAND ${GENHTML_PROG} -o ${COVERAGE_REPORT_DIR} ${COVERAGE_FILE}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS run_all_tests
-    COMMENT "Generating code coverage"
-  )
+    COMMENT "Generating code coverage")
   return()
 endif()
 
-## Sanitizers
+# Sanitizers
 include(CheckCXXCompilerFlag)
 get_target_property(TESTS run_all_tests SOURCES)
 
 set(ASan_FLAGS -g -O1 -fsanitize=address)
-set(UBSan_FLAGS -g -O1 -fsanitize=undefined -fno-sanitize=alignment -fno-sanitize-recover=undefined)
+set(UBSan_FLAGS -g -O1 -fsanitize=undefined -fno-sanitize=alignment
+                -fno-sanitize-recover=undefined)
 set(TSan_FLAGS -g -O1 -fsanitize=thread)
 set(SANITIZERS ASan UBSan TSan)
 
@@ -107,21 +109,24 @@ foreach(sanitizer ${SANITIZERS})
     set(target_name "run_all_tests_${sanitizer_lc}")
 
     add_executable(${target_name} ${TESTS})
-    target_compile_definitions(${target_name} PRIVATE ${TEST_COMPILE_DEFINITIONS})
-    target_include_directories(${target_name} PRIVATE ${TEST_INCLUDE_DIRECTORIES})
-    target_link_libraries(${target_name} PUBLIC ${TEST_DEPENDENCIES} ${sanitizer_flags})
+    target_compile_definitions(${target_name}
+                               PRIVATE ${TEST_COMPILE_DEFINITIONS})
+    target_include_directories(${target_name}
+                               PRIVATE ${TEST_INCLUDE_DIRECTORIES})
+    target_link_libraries(${target_name} PUBLIC ${TEST_DEPENDENCIES}
+                                                ${sanitizer_flags})
     target_compile_options(${target_name} PRIVATE ${sanitizer_flags})
     add_test(NAME ${sanitizer}
-      COMMAND ${target_name} --gtest_output=xml:${TEST_OUTPUT_DIR}/${sanitizer_lc}.xml
-    )
+             COMMAND ${target_name}
+                     --gtest_output=xml:${TEST_OUTPUT_DIR}/${sanitizer_lc}.xml)
   endif()
 endforeach()
 
-## Valgrind
+# Valgrind
 find_program(VALGRIND_PROG valgrind)
 if(VALGRIND_PROG)
-  add_test(NAME Valgrind
+  add_test(
+    NAME Valgrind
     COMMAND ${VALGRIND_PROG} --error-exitcode=1 --track-origins=yes --
-            ./run_all_tests --gtest_output=xml:${TEST_OUTPUT_DIR}/valgrind.xml
-  )
+            ./run_all_tests --gtest_output=xml:${TEST_OUTPUT_DIR}/valgrind.xml)
 endif()

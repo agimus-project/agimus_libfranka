@@ -1,4 +1,7 @@
-find_package(Poco COMPONENTS ${Poco_FIND_COMPONENTS} CONFIG QUIET)
+find_package(
+  Poco
+  COMPONENTS ${Poco_FIND_COMPONENTS} CONFIG
+  QUIET)
 if(Poco_FOUND)
   return()
 endif()
@@ -15,18 +18,18 @@ foreach(component ${Poco_FIND_COMPONENTS})
     list(APPEND Poco_LIBRARIES ${component})
     if(NOT TARGET Poco::${component})
       add_library(Poco::${component} SHARED IMPORTED)
-      set_target_properties(Poco::${component} PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES ${Poco_INCLUDE_DIR}
-        IMPORTED_LOCATION ${${component_var}}
-      )
+      set_target_properties(
+        Poco::${component}
+        PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${Poco_INCLUDE_DIR}
+                   IMPORTED_LOCATION ${${component_var}})
     endif()
   endif()
 endforeach()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Poco
+find_package_handle_standard_args(
+  Poco
   FOUND_VAR Poco_FOUND
   REQUIRED_VARS Poco_INCLUDE_DIR Poco_LIBRARIES
   VERSION_VAR Poco_VERSION
-  HANDLE_COMPONENTS
-)
+  HANDLE_COMPONENTS)
