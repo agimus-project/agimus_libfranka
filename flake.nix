@@ -19,27 +19,23 @@
         imports = [
           inputs.gazebros2nix.flakeModule
           {
-            gazebros2nix = {
-              rosDistros = [ "humble" ];
-              rosShellDistro = "humble";
-              rosOverrides.agimus-libfranka = _final: _ros-final: {
-                src = lib.fileset.toSource {
-                  root = ./.;
-                  fileset = lib.fileset.unions [
-                    ./cmake
-                    ./doc
-                    ./examples
-                    ./include
-                    ./scripts
-                    ./src
-                    ./test
-                    ./CHANGELOG.md
-                    ./CMakeLists.txt
-                    ./LICENSE
-                    ./NOTICE
-                    ./README.md
-                  ];
-                };
+            gazebros2nix.rosOverrides.agimus-libfranka = _final: _ros-final: {
+              src = lib.fileset.toSource {
+                root = ./.;
+                fileset = lib.fileset.unions [
+                  ./cmake
+                  ./doc
+                  ./examples
+                  ./include
+                  ./scripts
+                  ./src
+                  ./test
+                  ./CHANGELOG.md
+                  ./CMakeLists.txt
+                  ./LICENSE
+                  ./NOTICE
+                  ./README.md
+                ];
               };
             };
           }
