@@ -9,9 +9,9 @@
 
   <buildtool_depend>cmake</buildtool_depend>
 
-  <build_depend>eigen</build_depend>
   <build_depend>libpoco-dev</build_depend>
-  <build_depend>agimus_libfranka_common</build_depend>
+  <build_export_depend>agimus_libfranka_common</build_export_depend>
+  <build_export_depend>eigen</build_export_depend>
 
   <exec_depend>libpoco-dev</exec_depend>
 
